@@ -2,12 +2,12 @@ import axios from "axios";
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
-import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 
 export default function EmployeeCard() {
   const [employeeList, setEmployeeList] = useState([]);
   const [show, setShow] = useState(false);
+  const [selectionModel, setSelectionModel] = useState([]);
 
   const getEmployees = () => {
     axios.get("http://localhost:3001/employees").then((response) => {
@@ -56,26 +56,38 @@ export default function EmployeeCard() {
 
   const handleClick = () => {
     getEmployees();
-    console.log(
-      employeeList.map((val, key) => {
-        return val.name;
-      })
-    );
     setShow(!show);
   };
 
   return (
     <>
       <div style={{ height: 400, width: "100%" }}>
-        <Button onClick={handleClick}>Load Employees</Button>
+        <Button variant="contained" onClick={handleClick}>
+          Load Employees
+        </Button>
         {show ? (
-          <DataGrid
-            rows={detailsRows}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-          />
+          <>
+            <DataGrid
+              rows={detailsRows}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              checkboxSelection
+              onSelectionModelChange={(ids) => {
+                setSelectionModel(ids);
+              }}
+              setSelectionModel={selectionModel}
+            />
+            <Button
+              variant="contained"
+              onClick={() => {
+                const selectedIDs = selectionModel;
+                deleteEmployee(selectedIDs);
+              }}
+            >
+              Delete Employees
+            </Button>
+          </>
         ) : null}
       </div>
     </>

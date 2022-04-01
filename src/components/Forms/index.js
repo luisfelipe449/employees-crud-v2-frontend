@@ -97,6 +97,7 @@ export default function Forms(props) {
         />
       </FormControl>
       <Button variant="contained" className='btn-add' onClick={addEmployee}>Add Employee</Button>
+      
     </Box>
   );
 }
